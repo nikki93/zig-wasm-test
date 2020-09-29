@@ -4,9 +4,9 @@
 
 let memory;
 
+const utf8Decoder = new TextDecoder('utf-8');
 const fromUTF8 = (ptr, len) => {
-  const bytes = new Uint8Array(memory.buffer, ptr, len);
-  return new TextDecoder('utf-8').decode(bytes);
+  return utf8Decoder.decode(new Uint8Array(memory.buffer, ptr, len));
 };
 
 //
