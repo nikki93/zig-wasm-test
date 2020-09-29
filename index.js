@@ -5,21 +5,20 @@
 let memory;
 
 const utf8Decoder = new TextDecoder('utf-8');
-const fromUTF8 = (ptr, len) => {
-  return utf8Decoder.decode(new Uint8Array(memory.buffer, ptr, len));
-};
+const readUTF8 = (ptr, len) => utf8Decoder.decode(new Uint8Array(memory.buffer, ptr, len));
 
 //
 // Exports to WASM
 //
 
-const JS_print = (msgPtr, msgLen) => {
-  console.log(fromUTF8(msgPtr, msgLen));
-};
+const env = {};
 
-const exportsToWASM = {
-  JS_print,
-};
+env.print = (msgPtr, msgLen) => console.log(readUTF8(msgPtr, msgLen));
+
+const gl = document.querySelector('#canvas').getContext('webgl');
+
+env.glClearColor = (r, g, b, a) => gl.clearColor(r, g, b, a);
+env.glClear = (mask) => gl.clear(mask);
 
 //
 // Instantiate WASM
@@ -28,7 +27,7 @@ const exportsToWASM = {
 (async () => {
   const response = await fetch('main.wasm');
   const bytes = await response.arrayBuffer();
-  const { instance } = await WebAssembly.instantiate(bytes, { env: exportsToWASM });
+  const { instance } = await WebAssembly.instantiate(bytes, { env });
 
   memory = instance.exports.memory;
 
