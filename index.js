@@ -4,7 +4,7 @@
 
 let memory;
 
-const readCharStr = (ptr, len) => {
+const fromUTF8 = (ptr, len) => {
   const bytes = new Uint8Array(memory.buffer, ptr, len);
   return new TextDecoder('utf-8').decode(bytes);
 };
@@ -14,7 +14,7 @@ const readCharStr = (ptr, len) => {
 //
 
 const JS_print = (msgPtr, msgLen) => {
-  console.log(readCharStr(msgPtr, msgLen));
+  console.log(fromUTF8(msgPtr, msgLen));
 };
 
 const exportsToWASM = {

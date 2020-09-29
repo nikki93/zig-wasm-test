@@ -1,8 +1,8 @@
-//
 // JS imports
-//
 
 extern fn JS_print(msgPtr: *const u8, msgLen: c_uint) void;
+
+// Entry points
 
 export fn init() void {
     const msg = "woah!\n";
