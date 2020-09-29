@@ -8,5 +8,3 @@ export fn init() void {
     const msg = "hello from zig!\n";
     JS_print(&msg[0], msg.len);
 }
-
-export fn frame() void {}
