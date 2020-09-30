@@ -37,7 +37,9 @@ env.glClear = (mask) => gl.clear(mask);
 
   if (instance.exports.frame) {
     const frame = (t) => {
-      instance.exports.frame(t);
+      if (document.hasFocus()) {
+        instance.exports.frame(t);
+      }
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
