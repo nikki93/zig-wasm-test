@@ -15,6 +15,6 @@ export fn init() void {
 }
 
 export fn frame() void {
-    glClearColor(0.8, 0.894, 0.96, 1);
+    glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
