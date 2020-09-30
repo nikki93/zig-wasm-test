@@ -16,7 +16,8 @@ export fn init() void {
     print("hello from zig!\n");
 }
 
-export fn frame() void {
-    glClearColor(0, 0, 0, 1);
+export fn frame(millis: f32) void {
+    const t = 0.001 * millis;
+    glClearColor(0.3 + 0.6 * @sin(t), 0.2, 0.6, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
