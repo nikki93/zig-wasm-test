@@ -86,6 +86,28 @@ env.webglClearColor = (r, g, b, a) => gl.clearColor(r, g, b, a);
 env.webglClear = (mask) => gl.clear(mask);
 env.webglDrawArrays = (mode, first, count) => gl.drawArrays(mode, first, count);
 
+// UI
+
+env.uiElemOpenStart = (tagPtr, tagLen) => IncrementalDOM.elementOpenStart(readUTF8(tagPtr, tagLen));
+env.uiElemOpenStartKeyInt = (tagPtr, tagLen, key) =>
+  IncrementalDOM.elementOpenStart(readUTF8(tagPtr, tagLen), key);
+env.uiElemOpenStartKeyStr = (tagPtr, tagLen, keyPtr, keyLen) =>
+  IncrementalDOM.elementOpenStart(readUTF8(tagPtr, tagLen), readUTF8(keyPtr, keyLen));
+
+env.uiElemOpenEnd = () => IncrementalDOM.elementOpenEnd();
+
+env.uiElemClose = (tagPtr, tagLen) => IncrementalDOM.elementClose(readUTF8(tagPtr, tagLen));
+
+env.uiAttrInt = (namePtr, nameLen, value) => IncrementalDOM.attr(readUTF8(namePtr, nameLen), value);
+env.uiAttrDouble = (namePtr, nameLen, value) =>
+  IncrementalDOM.attr(readUTF8(namePtr, nameLen), value);
+env.uiAttrStr = (namePtr, nameLen, valuePtr, valueLen) =>
+  IncrementalDOM.attr(readUTF8(namePtr, nameLen), readUTF8(valuePtr, valueLen));
+env.uiAttrClass = (classPtr, classLen) =>
+  IncrementalDOM.attr('class', readUTF8(classPtr, classLen));
+
+env.uiText = (valuePtr, valueLen) => IncrementalDOM.text(readUTF8(valuePtr, valueLen));
+
 //
 // Instantiate WASM
 //
@@ -109,5 +131,17 @@ env.webglDrawArrays = (mode, first, count) => gl.drawArrays(mode, first, count);
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
+  }
+
+  if (instance.exports.uiSide) {
+    const side = document.getElementById('side');
+    const uiSide = () => {
+      if (document.hasFocus()) {
+        IncrementalDOM.patch(side, () => {
+          instance.exports.uiSide();
+        });
+      }
+    };
+    setInterval(uiSide, 1000 / 20); // UI updates at 20Hz
   }
 })();

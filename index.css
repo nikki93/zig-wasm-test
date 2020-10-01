@@ -97,3 +97,11 @@ div.side-panel {
   display: flex;
   flex-direction: column;
 }
+
+/* Info */
+div.info {
+  display: flex;
+  flex-direction: row;
+  padding: 6px;
+  align-items: center;
+}

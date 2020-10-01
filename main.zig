@@ -99,6 +99,67 @@ const gl = struct {
     const VERTEX_SHADER: c_uint = 0x8B31;
 };
 
+// UI
+//
+
+const ui = struct {
+    // Elem
+    //
+    extern fn uiElemOpenStart(tagPtr: *const u8, tagLen: c_uint) void;
+    pub fn elemOpenStart(tag: []const u8) void {
+        uiElemOpenStart(&tag[0], tag.len);
+    }
+
+    extern fn uiElemOpenStartKeyInt(tagPtr: *const u8, tagLen: c_uint, key: c_int) void;
+    extern fn uiElemOpenStartKeyStr(tagPtr: *const u8, tagLen: c_uint, keyPtr: *const u8, keyLen: c_uint) void;
+    pub fn elemOpenStartKey(tag: []const u8, key: anytype) void {
+        // TODO: Fill this in...
+    }
+
+    extern fn uiElemOpenEnd() void;
+    pub const elemOpenEnd = uiElemOpenEnd;
+
+    extern fn uiElemClose(tagPtr: *const u8, tagLen: c_uint) void;
+    pub fn elemClose(tag: []const u8) void {
+        uiElemClose(&tag[0], tag.len);
+    }
+
+    // Attr
+    //
+    extern fn uiAttrInt(namePtr: *const u8, nameLen: c_uint, value: c_int) void;
+    pub fn attrInt(name: []const u8, value: i32) void {
+        uiAttrInt(&name[0], name.len, value);
+    }
+
+    extern fn uiAttrDouble(namePtr: *const u8, nameLen: c_uint, value: f64) void;
+    pub fn attrDouble(name: []const u8, value: f64) void {
+        uiAttrDouble(&name[0], name.len, value);
+    }
+
+    pub fn attrBool(name: []const u8, value: bool) void {
+        if (value) {
+            attrStr(name, "");
+        }
+    }
+
+    extern fn uiAttrStr(namePtr: *const u8, nameLen: c_uint, valuePtr: *const u8, valueLen: c_uint) void;
+    pub fn attrStr(name: []const u8, value: []const u8) void {
+        uiAttrStr(&name[0], name.len, &value[0], value.len);
+    }
+
+    extern fn uiAttrClass(classPtr: *const u8, classLen: c_uint) void;
+    pub fn attrClass(class: []const u8) void {
+        uiAttrClass(&class[0], class.len);
+    }
+
+    // Text
+    //
+    extern fn uiText(valuePtr: *const u8, valueLen: c_uint) void;
+    pub fn text(value: []const u8) void {
+        uiText(&value[0], value.len);
+    }
+};
+
 // Main
 //
 
@@ -153,4 +214,12 @@ export fn frame(millis: f32) void {
     const data = [_]f32{ 0, 0, 0, 0.1 + 0.3 * @sin(t), 0.7, 0 };
     gl.bufferData(gl.ARRAY_BUFFER, data[0..], gl.STREAM_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+export fn uiSide() void {
+    ui.elemOpenStart("div");
+    ui.attrClass("info");
+    ui.elemOpenEnd();
+    ui.text("hello from zig! :O");
+    ui.elemClose("div");
 }
