@@ -200,6 +200,13 @@ pub const ui = struct {
     pub fn text(value: []const u8) void {
         uiText(&value[0], value.len);
     }
+
+    // Events
+    //
+    extern fn uiEvents(typePtr: *const u8, typeLen: c_uint) c_int;
+    pub fn events(typ: []const u8) c_int {
+        return uiEvents(&typ[0], typ.len);
+    }
 };
 
 // Main
@@ -244,6 +251,8 @@ export fn deinit() void {
     gl.deleteProgram(prog);
 }
 
+var height: i32 = 0;
+
 export fn frame(millis: f32) void {
     gl.setupViewport();
 
@@ -253,17 +262,46 @@ export fn frame(millis: f32) void {
 
     gl.useProgram(prog);
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    const data = [_]f32{ 0, 0, 0, 0.1 + 0.3 * @sin(t), 0.7, 0 };
+    const data = [_]f32{ 0, 0, 0, @intToFloat(f32, height) * 0.1, 0.7, 0 };
     gl.bufferData(gl.ARRAY_BUFFER, data[0..], gl.STREAM_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 
+const std = @import("std");
+
 export fn uiSide() void {
-    ui.elemOpen("div", .{ .style = "padding: 12px" });
+    ui.elemOpen("div", .{ .class = "container" });
     ui.text("hello from zig! :O");
     ui.elemClose("div");
 
-    ui.elemOpen("div", .{ .style = "padding: 12px" });
+    ui.elemOpen("div", .{ .class = "container" });
     ui.elem("img", .{ .src = "https://ziglang.org/img/zig-logo-light.svg" });
+    ui.elemClose("div");
+
+    ui.elemOpen("div", .{ .style = "overflow-y: scroll" });
+    var i: i32 = 0;
+    while (i < 50) : (i += 1) {
+        ui.elemOpen("div", .{ .class = "container", .style = "flex-direction: row" });
+        {
+            ui.elemOpen("button", .{ .class = "plus" });
+            if (ui.events("click") > 0) {
+                height += 1;
+            }
+            ui.elemClose("button");
+
+            ui.elemOpen("div", .{ .class = "info" });
+            var tmp: [128]u8 = undefined;
+            const msg = std.fmt.bufPrint(tmp[0..], "{}", .{height}) catch unreachable;
+            ui.text(msg);
+            ui.elemClose("div");
+
+            ui.elemOpen("button", .{ .class = "minus" });
+            if (ui.events("click") > 0) {
+                height -= 1;
+            }
+            ui.elemClose("button");
+        }
+        ui.elemClose("div");
+    }
     ui.elemClose("div");
 }

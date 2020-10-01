@@ -108,6 +108,39 @@ env.uiAttrClass = (classPtr, classLen) =>
 
 env.uiText = (valuePtr, valueLen) => IncrementalDOM.text(readUTF8(valuePtr, valueLen));
 
+let uiEventCounts = new WeakMap();
+const handler = (e) => {
+  const target = e.target;
+  let counts = uiEventCounts.get(target);
+  if (counts === undefined) {
+    counts = {};
+    uiEventCounts.set(target, counts);
+  }
+  const count = counts[e.type];
+  if (count === undefined) {
+    counts[e.type] = 1;
+  } else {
+    counts[e.type] = count + 1;
+  }
+};
+env.uiEvents = (typePtr, typeLen) => {
+  const type = readUTF8(typePtr, typeLen);
+  const target = IncrementalDOM.currentElement();
+  if (!target.__UIHandlerRegistered) {
+    target.addEventListener(type, handler);
+    target.__UIHandlerRegistered = true;
+  }
+  const counts = uiEventCounts.get(target);
+  if (counts === undefined) {
+    return 0;
+  }
+  const count = counts[type];
+  if (count === undefined) {
+    return 0;
+  }
+  return count;
+};
+
 //
 // Instantiate WASM
 //
@@ -140,8 +173,10 @@ env.uiText = (valuePtr, valueLen) => IncrementalDOM.text(readUTF8(valuePtr, valu
         IncrementalDOM.patch(side, () => {
           instance.exports.uiSide();
         });
+        uiEventCounts = new WeakMap();
       }
+      requestAnimationFrame(uiSide);
     };
-    setInterval(uiSide, 1000 / 20); // UI updates at 20Hz
+    requestAnimationFrame(uiSide);
   }
 })();

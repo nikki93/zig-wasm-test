@@ -98,10 +98,73 @@ div.side-panel {
   flex-direction: column;
 }
 
-/* Info */
-div.info {
+/* Side container */
+div#side div.container {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Side info */
+div#side div.info {
   display: flex;
   flex-direction: row;
   padding: 6px;
   align-items: center;
 }
+
+/* Button base */
+button {
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin: 4px;
+  border-radius: 8px;
+  transition: 0.1s;
+}
+button:focus {
+  outline: 0;
+}
+button::before {
+  font-size: 16px;
+  font-family: FontAwesome;
+}
+button::after {
+  padding-left: 5px;
+}
+@media (hover: hover) {
+  button:hover:not([disabled]) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+button:active {
+  background-color: coral;
+}
+button[selected] {
+  color: coral;
+}
+button[disabled] {
+  color: #303030;
+  cursor: default;
+}
+button[label]::after {
+  content: attr(label);
+}
+
+/* Plus button */
+button.plus::before {
+  content: '\f067';
+}
+
+/* Minus button */
+button.minus::before {
+  content: '\f068';
+}
+
