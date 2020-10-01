@@ -88,13 +88,15 @@ const gl = struct {
 
     // Constants
     //
-    const ARRAY_BUFFER: c_uint = 34962;
-    const COLOR_BUFFER_BIT: c_uint = 16384;
-    const FLOAT: c_uint = 5126;
-    const FRAGMENT_SHADER: c_uint = 35632;
-    const STATIC_DRAW: c_uint = 35044;
-    const TRIANGLES: c_uint = 4;
-    const VERTEX_SHADER: c_uint = 35633;
+    const ARRAY_BUFFER: c_uint = 0x8892;
+    const COLOR_BUFFER_BIT: c_uint = 0x00004000;
+    const FLOAT: c_uint = 0x1406;
+    const FRAGMENT_SHADER: c_uint = 0x8B30;
+    const STREAM_DRAW: c_uint = 0x88E0;
+    const STATIC_DRAW: c_uint = 0x88E4;
+    const DYNAMIC_DRAW: c_uint = 0x88E8;
+    const TRIANGLES: c_uint = 0x0004;
+    const VERTEX_SHADER: c_uint = 0x8B31;
 };
 
 // Main
@@ -128,8 +130,6 @@ export fn init() void {
 
     buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    const data = [_]f32{ 0, 0, 0, 0.5, 0.7, 0 };
-    gl.bufferData(gl.ARRAY_BUFFER, data[0..], gl.STATIC_DRAW);
 
     const pos = gl.getAttribLocation(prog, "a_position");
     gl.enableVertexAttribArray(pos);
@@ -150,5 +150,7 @@ export fn frame(millis: f32) void {
 
     gl.useProgram(prog);
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    const data = [_]f32{ 0, 0, 0, 0.1 + 0.3 * @sin(t), 0.7, 0 };
+    gl.bufferData(gl.ARRAY_BUFFER, data[0..], gl.STREAM_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
