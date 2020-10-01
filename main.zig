@@ -113,7 +113,18 @@ pub const ui = struct {
     extern fn uiElemOpenStartKeyInt(tagPtr: *const u8, tagLen: c_uint, key: c_int) void;
     extern fn uiElemOpenStartKeyStr(tagPtr: *const u8, tagLen: c_uint, keyPtr: *const u8, keyLen: c_uint) void;
     pub fn elemOpenStartKey(tag: []const u8, key: anytype) void {
-        // TODO: Fill this in...
+        const ti = @typeInfo(@TypeOf(key));
+        switch (ti) {
+            .Int => {
+                uiElemOpenStartKeyInt(&tag[0], tag.len, key);
+            },
+            .Pointer => {
+                uiElemOpenStartKeyStr(&tag[0], tag.len, &key[0], key.len);
+            },
+            else => {
+                @compileError("UI key type '" ++ @typeName(@TypeOf(value)) ++ "' not supported");
+            },
+        }
     }
 
     extern fn uiElemOpenEnd() void;
@@ -124,24 +135,23 @@ pub const ui = struct {
         uiElemClose(&tag[0], tag.len);
     }
 
-    pub fn elemOpen(tag: []const u8, attrs: anytype) void {
+    pub fn elemOpen(tag: []const u8, attrStruct: anytype) void {
         elemOpenStart(tag);
-        const ti = @typeInfo(@TypeOf(attrs));
-        switch (ti) {
-            .Struct => {
-                inline for (ti.Struct.fields) |field| {
-                    attr(field.name, @field(attrs, field.name));
-                }
-            },
-            else => {
-                @compileError("`attrs` must have struct type");
-            },
-        }
+        attrs(attrStruct);
+        elemOpenEnd();
+    }
+    pub fn elemOpenKey(tag: []const u8, key: anytype, attrStruct: anytype) void {
+        elemOpenStartKey(tag, key);
+        attrs(attrStruct);
         elemOpenEnd();
     }
 
-    pub fn elem(tag: []const u8, attrs: anytype) void {
-        elemOpen(tag, attrs);
+    pub fn elem(tag: []const u8, attrStruct: anytype) void {
+        elemOpen(tag, attrStruct);
+        elemClose(tag);
+    }
+    pub fn elemKey(tag: []const u8, key: anytype, attrStruct: anytype) void {
+        elemOpenKey(tag, key, attrStruct);
         elemClose(tag);
     }
 
@@ -190,6 +200,20 @@ pub const ui = struct {
             },
             else => {
                 @compileError("UI attribute type '" ++ @typeName(@TypeOf(value)) ++ "' not supported");
+            },
+        }
+    }
+
+    pub fn attrs(attrStruct: anytype) void {
+        const ti = @typeInfo(@TypeOf(attrStruct));
+        switch (ti) {
+            .Struct => {
+                inline for (ti.Struct.fields) |field| {
+                    attr(field.name, @field(attrStruct, field.name));
+                }
+            },
+            else => {
+                @compileError("`attrStruct` must have struct type");
             },
         }
     }
@@ -281,12 +305,10 @@ export fn uiSide() void {
     ui.elemOpen("div", .{ .style = "overflow-y: scroll" });
     var i: i32 = 0;
     while (i < 50) : (i += 1) {
-        ui.elemOpen("div", .{ .class = "container", .style = "flex-direction: row" });
+        ui.elemOpenKey("div", i, .{ .class = "container", .style = "flex-direction: row" });
         {
             ui.elemOpen("button", .{ .class = "plus" });
-            if (ui.events("click") > 0) {
-                height += 1;
-            }
+            height += ui.events("click");
             ui.elemClose("button");
 
             ui.elemOpen("div", .{ .class = "info" });
@@ -296,9 +318,7 @@ export fn uiSide() void {
             ui.elemClose("div");
 
             ui.elemOpen("button", .{ .class = "minus" });
-            if (ui.events("click") > 0) {
-                height -= 1;
-            }
+            height -= ui.events("click");
             ui.elemClose("button");
         }
         ui.elemClose("div");
