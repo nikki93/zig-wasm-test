@@ -124,6 +124,27 @@ pub const ui = struct {
         uiElemClose(&tag[0], tag.len);
     }
 
+    pub fn elemOpen(tag: []const u8, attrs: anytype) void {
+        elemOpenStart(tag);
+        const ti = @typeInfo(@TypeOf(attrs));
+        switch (ti) {
+            .Struct => {
+                inline for (ti.Struct.fields) |field| {
+                    attr(field.name, @field(attrs, field.name));
+                }
+            },
+            else => {
+                @compileError("`attrs` must have struct type");
+            },
+        }
+        elemOpenEnd();
+    }
+
+    pub fn elem(tag: []const u8, attrs: anytype) void {
+        elemOpen(tag, attrs);
+        elemClose(tag);
+    }
+
     // Attr
     //
     extern fn uiAttrInt(namePtr: *const u8, nameLen: c_uint, value: c_int) void;
@@ -131,9 +152,9 @@ pub const ui = struct {
         uiAttrInt(&name[0], name.len, value);
     }
 
-    extern fn uiAttrDouble(namePtr: *const u8, nameLen: c_uint, value: f64) void;
-    pub fn attrDouble(name: []const u8, value: f64) void {
-        uiAttrDouble(&name[0], name.len, value);
+    extern fn uiAttrFloat(namePtr: *const u8, nameLen: c_uint, value: f64) void;
+    pub fn attrFloat(name: []const u8, value: f64) void {
+        uiAttrFloat(&name[0], name.len, value);
     }
 
     pub fn attrBool(name: []const u8, value: bool) void {
@@ -150,6 +171,27 @@ pub const ui = struct {
     extern fn uiAttrClass(classPtr: *const u8, classLen: c_uint) void;
     pub fn attrClass(class: []const u8) void {
         uiAttrClass(&class[0], class.len);
+    }
+
+    pub fn attr(name: []const u8, value: anytype) void {
+        const ti = @typeInfo(@TypeOf(value));
+        switch (ti) {
+            .Int => {
+                attrInt(name, value);
+            },
+            .Float => {
+                attrFloat(name, value);
+            },
+            .Bool => {
+                attrBool(name, value);
+            },
+            .Pointer => {
+                attrStr(name, value);
+            },
+            else => {
+                @compileError("UI attribute type '" ++ @typeName(@TypeOf(value)) ++ "' not supported");
+            },
+        }
     }
 
     // Text
@@ -217,9 +259,11 @@ export fn frame(millis: f32) void {
 }
 
 export fn uiSide() void {
-    ui.elemOpenStart("div");
-    ui.attrClass("info");
-    ui.elemOpenEnd();
+    ui.elemOpen("div", .{ .style = "padding: 12px" });
     ui.text("hello from zig! :O");
+    ui.elemClose("div");
+
+    ui.elemOpen("div", .{ .style = "padding: 12px" });
+    ui.elem("img", .{ .src = "https://ziglang.org/img/zig-logo-light.svg" });
     ui.elemClose("div");
 }

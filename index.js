@@ -99,7 +99,7 @@ env.uiElemOpenEnd = () => IncrementalDOM.elementOpenEnd();
 env.uiElemClose = (tagPtr, tagLen) => IncrementalDOM.elementClose(readUTF8(tagPtr, tagLen));
 
 env.uiAttrInt = (namePtr, nameLen, value) => IncrementalDOM.attr(readUTF8(namePtr, nameLen), value);
-env.uiAttrDouble = (namePtr, nameLen, value) =>
+env.uiAttrFloat = (namePtr, nameLen, value) =>
   IncrementalDOM.attr(readUTF8(namePtr, nameLen), value);
 env.uiAttrStr = (namePtr, nameLen, valuePtr, valueLen) =>
   IncrementalDOM.attr(readUTF8(namePtr, nameLen), readUTF8(valuePtr, valueLen));
