@@ -290,8 +290,8 @@ export fn uiSide() void {
             ui.elemClose("button");
 
             ui.elemOpen("div", .{ .class = "info" });
-            var tmp: [128]u8 = undefined;
-            const msg = std.fmt.bufPrint(tmp[0..], "{}", .{height}) catch unreachable;
+            var tmp: [16]u8 = undefined;
+            const msg = std.fmt.bufPrint(tmp[0..], "{}", .{height}) catch "";
             ui.text(msg);
             ui.elemClose("div");
 
