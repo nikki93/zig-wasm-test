@@ -1,7 +1,7 @@
 // Console
 //
 
-const console = struct {
+pub const console = struct {
     extern fn consoleLog(msgPtr: *const u8, msgLen: c_uint) void;
     pub fn log(msg: []const u8) void {
         consoleLog(&msg[0], msg.len);
@@ -11,56 +11,56 @@ const console = struct {
 // GL
 //
 
-const gl = struct {
+pub const gl = struct {
     // Shaders
     //
     extern fn myglSetupShader(typ: c_uint, sourcePtr: *const u8, sourceLen: c_uint) c_uint;
-    fn setupShader(typ: c_uint, source: []const u8) c_uint {
+    pub fn setupShader(typ: c_uint, source: []const u8) c_uint {
         return myglSetupShader(typ, &source[0], source.len);
     }
 
     extern fn webglDeleteShader(shaderId: c_uint) void;
-    const deleteShader = webglDeleteShader;
+    pub const deleteShader = webglDeleteShader;
 
     // Programs
     //
     extern fn myglSetupProgram(vertId: c_uint, fragId: c_uint) c_uint;
-    const setupProgram = myglSetupProgram;
+    pub const setupProgram = myglSetupProgram;
 
     extern fn webglDeleteProgram(programId: c_uint) void;
-    const deleteProgram = webglDeleteProgram;
+    pub const deleteProgram = webglDeleteProgram;
 
     extern fn webglUseProgram(programId: c_uint) void;
-    const useProgram = webglUseProgram;
+    pub const useProgram = webglUseProgram;
 
     // Buffers
     //
     extern fn webglCreateBuffer() c_uint;
-    const createBuffer = webglCreateBuffer;
+    pub const createBuffer = webglCreateBuffer;
 
     extern fn webglBindBuffer(target: c_uint, bufferId: c_uint) void;
-    const bindBuffer = webglBindBuffer;
+    pub const bindBuffer = webglBindBuffer;
 
     extern fn webglBufferData(target: c_uint, dataPtr: *const f32, dataLen: c_uint, usage: c_uint) void;
-    fn bufferData(target: c_uint, data: []const f32, usage: c_uint) void {
+    pub fn bufferData(target: c_uint, data: []const f32, usage: c_uint) void {
         webglBufferData(target, &data[0], data.len, usage);
     }
 
     extern fn webglDeleteBuffer(bufferId: c_uint) void;
-    const deleteBuffer = webglDeleteBuffer;
+    pub const deleteBuffer = webglDeleteBuffer;
 
     // Attributes
     //
     extern fn webglGetAttribLocation(programId: c_uint, namePtr: *const u8, nameLen: c_uint) c_int;
-    fn getAttribLocation(programId: c_uint, name: []const u8) c_int {
+    pub fn getAttribLocation(programId: c_uint, name: []const u8) c_int {
         return webglGetAttribLocation(programId, &name[0], name.len);
     }
 
     extern fn webglEnableVertexAttribArray(index: c_int) void;
-    const enableVertexAttribArray = webglEnableVertexAttribArray;
+    pub const enableVertexAttribArray = webglEnableVertexAttribArray;
 
     extern fn webglDisableVertexAttribArray(index: c_int) void;
-    const disableVertexAttribArray = webglDisableVertexAttribArray;
+    pub const disableVertexAttribArray = webglDisableVertexAttribArray;
 
     extern fn webglVertexAttribPointer(
         index: c_int,
@@ -70,12 +70,12 @@ const gl = struct {
         stride: c_uint,
         offset: c_uint,
     ) void;
-    const vertexAttribPointer = webglVertexAttribPointer;
+    pub const vertexAttribPointer = webglVertexAttribPointer;
 
     // Draw
     //
     extern fn myglSetupViewport() void;
-    const setupViewport = myglSetupViewport;
+    pub const setupViewport = myglSetupViewport;
 
     extern fn webglClearColor(r: f32, g: f32, b: f32, a: f32) void;
     pub const clearColor = webglClearColor;
@@ -88,21 +88,21 @@ const gl = struct {
 
     // Constants
     //
-    const ARRAY_BUFFER: c_uint = 0x8892;
-    const COLOR_BUFFER_BIT: c_uint = 0x00004000;
-    const FLOAT: c_uint = 0x1406;
-    const FRAGMENT_SHADER: c_uint = 0x8B30;
-    const STREAM_DRAW: c_uint = 0x88E0;
-    const STATIC_DRAW: c_uint = 0x88E4;
-    const DYNAMIC_DRAW: c_uint = 0x88E8;
-    const TRIANGLES: c_uint = 0x0004;
-    const VERTEX_SHADER: c_uint = 0x8B31;
+    pub const ARRAY_BUFFER: c_uint = 0x8892;
+    pub const COLOR_BUFFER_BIT: c_uint = 0x00004000;
+    pub const FLOAT: c_uint = 0x1406;
+    pub const FRAGMENT_SHADER: c_uint = 0x8B30;
+    pub const STREAM_DRAW: c_uint = 0x88E0;
+    pub const STATIC_DRAW: c_uint = 0x88E4;
+    pub const DYNAMIC_DRAW: c_uint = 0x88E8;
+    pub const TRIANGLES: c_uint = 0x0004;
+    pub const VERTEX_SHADER: c_uint = 0x8B31;
 };
 
 // UI
 //
 
-const ui = struct {
+pub const ui = struct {
     // Elem
     //
     extern fn uiElemOpenStart(tagPtr: *const u8, tagLen: c_uint) void;
