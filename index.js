@@ -74,8 +74,8 @@ env.webglVertexAttribPointer = (index, size, type, normalize, stride, offset) =>
   gl.vertexAttribPointer(index, size, type, normalize, stride, offset);
 
 env.myglSetupViewport = () => {
-  const w = window.devicePixelRatio * gl.canvas.clientWidth;
-  const h = window.devicePixelRatio * gl.canvas.clientHeight;
+  const w = gl.canvas.clientWidth;
+  const h = gl.canvas.clientHeight;
   if (gl.canvas.width != w || gl.canvas.height != h) {
     gl.canvas.width = w;
     gl.canvas.height = h;
@@ -91,7 +91,7 @@ env.webglDrawArrays = (mode, first, count) => gl.drawArrays(mode, first, count);
 //
 
 (async () => {
-  const response = await fetch('main.wasm');
+  const response = await fetch('main.wasm?ts=' + new Date().getTime());
   const bytes = await response.arrayBuffer();
   const { instance } = await WebAssembly.instantiate(bytes, { env });
 

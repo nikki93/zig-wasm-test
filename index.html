@@ -6,34 +6,65 @@
     <meta name="apple-mobile-web-app-title" content="zig wasm test" />
     <meta name="viewport" content="width=device-width, user-scalable=no" />
 
-    <style>
-      html {
-        width: 100%;
-        height: 100%;
-      }
-      body {
-        background-color: #121212;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 14px;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/incremental-dom@0.7.0/dist/incremental-dom.js"></script>
 
-      canvas {
-        background-color: black;
-        outline: none;
-        -webkit-tap-highlight-color: transparent;
-        max-width: 800;
-        max-height: 600;
-      }
-    </style>
+    <!-- Styles -->
+    <script type="text/javascript">
+      // Skip cache
+      const l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.type = 'text/css';
+      l.href = 'index.css?ts=' + new Date().getTime();
+      document.getElementsByTagName('head')[0].appendChild(l);
+    </script>
   </head>
   <body>
-    <canvas id="canvas" width="800" height="600"></canvas>
-    <script src="index.js"></script>
+    <!-- Root -->
+    <div class="root-container">
+      <!-- Main -->
+      <div class="main-container">
+        <!-- Top -->
+        <div class="top-container">
+          <div class="top-panel" id="top"></div>
+        </div>
+
+        <!-- Scene -->
+        <div class="scene-container">
+          <div class="scene-aspect-ratio">
+            <canvas
+              class="scene"
+              id="canvas"
+              oncontextmenu="event.preventDefault()"
+              tabindex="0"
+              onclick="this.focus()"
+            />
+          </div>
+          <script>
+            document.getElementById('canvas').focus();
+          </script>
+        </div>
+
+        <!-- Bottom -->
+        <div class="bottom-container">
+          <div class="bottom-panel" id="bottom"></div>
+        </div>
+      </div>
+
+      <!-- Side -->
+      <div class="side-container">
+        <div class="side-panel" id="side"></div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+      // Skip cache
+      const s = document.createElement('script');
+      s.async = true;
+      s.type = 'text/javascript';
+      s.src = 'index.js?ts=' + new Date().getTime();
+      document.getElementsByTagName('head')[0].appendChild(s);
+    </script>
   </body>
 </html>

@@ -1,0 +1,87 @@
+@import url('https://necolas.github.io/normalize.css/8.0.1/normalize.css');
+
+/* Basics */
+html {
+  width: 100%;
+  height: 100%;
+}
+body {
+  background-color: #121212;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Root */
+div.root-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Main */
+div.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scene */
+div.scene-container {
+  background-color: black;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+div.scene-aspect-ratio {
+  width: 100%;
+  padding-top: 56.25%;
+  position: relative;
+}
+canvas.scene {
+  background-color: black;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Top */
+div.top-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Bottom */
+div.bottom-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Side */
+div.side-container {
+  flex: 0.5;
+  max-width: 800px;
+  position: relative;
+}
+div.side-panel {
+  position: absolute; /* Force layout boundary */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
