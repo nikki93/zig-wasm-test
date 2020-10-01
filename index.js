@@ -73,7 +73,15 @@ env.webglDisableVertexAttribArray = (index) => gl.disableVertexAttribArray(index
 env.webglVertexAttribPointer = (index, size, type, normalize, stride, offset) =>
   gl.vertexAttribPointer(index, size, type, normalize, stride, offset);
 
-env.webglViewport = (x, y, w, h) => gl.viewport(x, y, w, h);
+env.myglSetupViewport = () => {
+  const displayWidth = gl.canvas.clientWidth;
+  const displayHeight = gl.canvas.clientHeight;
+  if (gl.canvas.width != displayWidth || gl.canvas.height != displayHeight) {
+    gl.canvas.width = displayWidth;
+    gl.canvas.height = displayHeight;
+  }
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+};
 env.webglClearColor = (r, g, b, a) => gl.clearColor(r, g, b, a);
 env.webglClear = (mask) => gl.clear(mask);
 env.webglDrawArrays = (mode, first, count) => gl.drawArrays(mode, first, count);

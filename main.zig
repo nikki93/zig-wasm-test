@@ -74,8 +74,8 @@ const gl = struct {
 
     // Draw
     //
-    extern fn webglViewport(x: c_int, y: c_int, w: c_int, h: c_int) void;
-    const viewport = webglViewport;
+    extern fn myglSetupViewport() void;
+    const setupViewport = myglSetupViewport;
 
     extern fn webglClearColor(r: f32, g: f32, b: f32, a: f32) void;
     pub const clearColor = webglClearColor;
