@@ -13,7 +13,11 @@ const readUTF8 = (ptr, len) => utf8Decoder.decode(new Uint8Array(memory.buffer, 
 
 const env = {};
 
-env.print_ = (msgPtr, msgLen) => console.log(readUTF8(msgPtr, msgLen));
+// Console
+
+env.consoleLog = (msgPtr, msgLen) => console.log(readUTF8(msgPtr, msgLen));
+
+// GL
 
 const gl = document.querySelector('#canvas').getContext('webgl');
 
