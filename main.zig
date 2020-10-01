@@ -142,6 +142,8 @@ export fn deinit() void {
 }
 
 export fn frame(millis: f32) void {
+    gl.setupViewport();
+
     const t = 0.001 * millis;
     gl.clearColor(0.2, 0.1, 0.1 + 0.3 * @sin(t), 1);
     gl.clear(gl.COLOR_BUFFER_BIT);

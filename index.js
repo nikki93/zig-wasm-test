@@ -74,13 +74,13 @@ env.webglVertexAttribPointer = (index, size, type, normalize, stride, offset) =>
   gl.vertexAttribPointer(index, size, type, normalize, stride, offset);
 
 env.myglSetupViewport = () => {
-  const displayWidth = gl.canvas.clientWidth;
-  const displayHeight = gl.canvas.clientHeight;
-  if (gl.canvas.width != displayWidth || gl.canvas.height != displayHeight) {
-    gl.canvas.width = displayWidth;
-    gl.canvas.height = displayHeight;
+  const w = window.devicePixelRatio * gl.canvas.clientWidth;
+  const h = window.devicePixelRatio * gl.canvas.clientHeight;
+  if (gl.canvas.width != w || gl.canvas.height != h) {
+    gl.canvas.width = w;
+    gl.canvas.height = h;
   }
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 };
 env.webglClearColor = (r, g, b, a) => gl.clearColor(r, g, b, a);
 env.webglClear = (mask) => gl.clear(mask);
