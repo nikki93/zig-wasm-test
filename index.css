@@ -1,4 +1,19 @@
+/* Dependencies */
 @import url('https://necolas.github.io/normalize.css/8.0.1/normalize.css');
+@import url('https://rsms.me/inter/inter.css');
+@import url('https://kit-free.fontawesome.com/releases/latest/css/free-v4-font-face.min.css');
+@import url('https://kit-free.fontawesome.com/releases/latest/css/free-v4-shims.min.css');
+@import url('https://kit-free.fontawesome.com/releases/latest/css/free.min.css');
+
+/* Font */
+html {
+  font-family: 'Inter', sans-serif;
+}
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: 'Inter var', sans-serif;
+  }
+}
 
 /* Basics */
 html {
@@ -11,9 +26,6 @@ body {
   font-size: 14px;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Root */
@@ -73,7 +85,7 @@ div.bottom-panel {
 /* Side */
 div.side-container {
   flex: 0.5;
-  max-width: 800px;
+  max-width: 400px;
   position: relative;
 }
 div.side-panel {
