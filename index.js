@@ -7,6 +7,20 @@ let memory;
 const utf8Decoder = new TextDecoder('utf-8');
 const readUTF8 = (ptr, len) => utf8Decoder.decode(new Uint8Array(memory.buffer, ptr, len));
 
+const utf8Encoder = new TextEncoder('utf-8');
+let writeUTF8;
+if (utf8Encoder.encodeInto) {
+  writeUTF8 = (val, ptr, len) =>
+    utf8Encoder.encodeInto(val, new Uint8Array(memory.buffer, ptr, len)).written;
+} else {
+  writeUTF8 = (val, ptr, len) => {
+    const encoded = utf8Encoder.encode(val);
+    len = Math.min(len, encoded.length);
+    new Uint8Array(memory.buffer, ptr, len).set(encoded.slice(0, len));
+    return len;
+  };
+}
+
 //
 // Exports to WASM
 //
@@ -16,6 +30,10 @@ const env = {};
 // Console
 
 env.consoleLog = (msgPtr, msgLen) => console.log(readUTF8(msgPtr, msgLen));
+
+// Timing
+
+env.timingMillis = () => performance.now();
 
 // GL
 
@@ -73,9 +91,13 @@ env.webglDisableVertexAttribArray = (index) => gl.disableVertexAttribArray(index
 env.webglVertexAttribPointer = (index, size, type, normalize, stride, offset) =>
   gl.vertexAttribPointer(index, size, type, normalize, stride, offset);
 
+const dpiScale =
+  /iPad|iPhone/.test(navigator.platform) || navigator.platform == 'MacIntel'
+    ? window.devicePixelRatio
+    : 1;
 env.myglSetupViewport = () => {
-  const w = gl.canvas.clientWidth;
-  const h = gl.canvas.clientHeight;
+  const w = dpiScale * gl.canvas.clientWidth;
+  const h = dpiScale * gl.canvas.clientHeight;
   if (gl.canvas.width != w || gl.canvas.height != h) {
     gl.canvas.width = w;
     gl.canvas.height = h;
@@ -141,6 +163,11 @@ env.uiEvents = (typePtr, typeLen) => {
   return count;
 };
 
+IncrementalDOM.attributes.value = IncrementalDOM.applyProp;
+env.uiValue = (bufPtr, bufLen) => writeUTF8(IncrementalDOM.currentElement().value, bufPtr, bufLen);
+env.uiSetValue = (valPtr, valLen) =>
+  (IncrementalDOM.currentElement().value = readUTF8(valPtr, valLen));
+
 //
 // Instantiate WASM
 //
@@ -157,26 +184,34 @@ env.uiEvents = (typePtr, typeLen) => {
   }
 
   if (instance.exports.frame) {
-    const frame = (t) => {
+    const frame = () => {
       if (document.hasFocus()) {
-        instance.exports.frame(t);
+        instance.exports.frame();
       }
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
   }
 
-  if (instance.exports.uiSide) {
-    const side = document.getElementById('side');
-    const uiSide = () => {
+  const uiExports = [];
+  Object.keys(instance.exports).forEach((exportName) => {
+    // `uiXyz` patches element with id `xyz`
+    if (exportName.match(/^ui[A-Z]/)) {
+      const id = exportName.charAt(2).toLowerCase() + exportName.slice(3);
+      const elem = document.getElementById(id);
+      if (elem) {
+        uiExports.push({ elem, handler: instance.exports[exportName] });
+      }
+    }
+  });
+  if (uiExports.length > 0) {
+    const uiFrame = () => {
       if (document.hasFocus()) {
-        IncrementalDOM.patch(side, () => {
-          instance.exports.uiSide();
-        });
+        uiExports.forEach(({ elem, handler }) => IncrementalDOM.patch(elem, () => handler()));
         uiEventCounts = new WeakMap();
       }
-      requestAnimationFrame(uiSide);
+      requestAnimationFrame(uiFrame);
     };
-    requestAnimationFrame(uiSide);
+    requestAnimationFrame(uiFrame);
   }
 })();

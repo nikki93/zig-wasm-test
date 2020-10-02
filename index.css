@@ -28,6 +28,8 @@ body {
   height: 100%;
 }
 
+/* --- Layout --------------------------------------------------------------------- */
+
 /* Root */
 div.root-container {
   width: 100%;
@@ -68,21 +70,7 @@ canvas.scene {
   height: 100%;
 }
 
-/* Top */
-div.top-panel {
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-}
-
-/* Bottom */
-div.bottom-panel {
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-}
-
-/* Side */
+/* Side panel */
 div.side-container {
   flex: 0.5;
   max-width: 400px;
@@ -98,20 +86,37 @@ div.side-panel {
   flex-direction: column;
 }
 
-/* Side container */
-div#side div.container {
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Side info */
-div#side div.info {
+/* Bottom panel */
+div.bottom-panel {
+  height: 100%;
   display: flex;
   flex-direction: row;
-  padding: 6px;
-  align-items: center;
 }
+
+/* Top panel */
+div.top-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+/* --- Side ----------------------------------------------------------------------- */
+
+/* Side section */
+div.section {
+  padding: 18px;
+  display: flex;
+  flex-direction: row;
+}
+
+/* --- Bottom --------------------------------------------------------------------- */
+
+/* Bottom status */
+div#bottom div.status {
+  padding: 6px 12px 6px 12px;
+}
+
+/* --- Common --------------------------------------------------------------------- */
 
 /* Button base */
 button {
@@ -158,6 +163,33 @@ button[label]::after {
   content: attr(label);
 }
 
+/* Input base */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+input {
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 6px;
+  margin: 4px;
+  border-radius: 8px;
+  flex: 1;
+  max-width: 128px;
+}
+input[type='number'] {
+  max-width: 56px;
+}
+input:focus {
+  outline: 0;
+}
+
 /* Plus button */
 button.plus::before {
   content: '\f067';
@@ -167,4 +199,3 @@ button.plus::before {
 button.minus::before {
   content: '\f068';
 }
-

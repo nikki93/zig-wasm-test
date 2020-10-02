@@ -1,9 +1,11 @@
+const util = @import("util.zig");
+
 pub const gl = struct {
     // Shaders
     //
     extern fn myglSetupShader(typ: c_uint, sourcePtr: *const u8, sourceLen: c_uint) c_uint;
     pub fn setupShader(typ: c_uint, source: []const u8) c_uint {
-        return myglSetupShader(typ, &source[0], source.len);
+        return myglSetupShader(typ, util.cPtr(source), source.len);
     }
 
     extern fn webglDeleteShader(shaderId: c_uint) void;
@@ -30,7 +32,7 @@ pub const gl = struct {
 
     extern fn webglBufferData(target: c_uint, dataPtr: *const f32, dataLen: c_uint, usage: c_uint) void;
     pub fn bufferData(target: c_uint, data: []const f32, usage: c_uint) void {
-        webglBufferData(target, &data[0], data.len, usage);
+        webglBufferData(target, util.cPtr(data), data.len, usage);
     }
 
     extern fn webglDeleteBuffer(bufferId: c_uint) void;
@@ -40,7 +42,7 @@ pub const gl = struct {
     //
     extern fn webglGetAttribLocation(programId: c_uint, namePtr: *const u8, nameLen: c_uint) c_int;
     pub fn getAttribLocation(programId: c_uint, name: []const u8) c_int {
-        return webglGetAttribLocation(programId, &name[0], name.len);
+        return webglGetAttribLocation(programId, util.cPtr(name), name.len);
     }
 
     extern fn webglEnableVertexAttribArray(index: c_int) void;
